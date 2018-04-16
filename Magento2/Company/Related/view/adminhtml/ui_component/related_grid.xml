@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">related_grid.related_grid_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>grid_list</spinner>
+        <deps>
+            <dep>related_grid.related_grid_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="related_grid_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="dataScope" xsi:type="string">filters.store_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>Company_Related::product_related</aclResource>
+        <dataProvider class="Company\Related\Ui\Component\DataProvider" name="related_grid_data_source"/>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <columnsControls name="columns_controls"/>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="grid_list">
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="10">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="product_name" sortOrder="40">
+            <settings>
+                <label translate="true">Product Name</label>
+            </settings>
+        </column>
+        <column name="qty" sortOrder="40">
+            <settings>
+                <label translate="true">Product Visitors Qty</label>
+            </settings>
+        </column>
+    </columns>
+</listing>

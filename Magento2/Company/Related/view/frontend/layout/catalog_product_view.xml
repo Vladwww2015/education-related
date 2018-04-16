@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="product.info.main">
+            <container after="product.info.extrahint" name="product.related.customers" label="Product Related Customers" htmlTag="div" htmlClass="product-related-customers">
+                <block class="Company\Related\Block\Related" template="Company_Related::product/view/related.phtml" name="product.related" as="productRelated"/>
+            </container>
+        </referenceContainer>
+    </body>
+</page>

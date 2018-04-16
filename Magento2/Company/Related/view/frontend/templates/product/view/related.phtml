@@ -1,0 +1,66 @@
+<?php
+/**
+ *
+ * @var $block \Company\Related\Block\Related
+ */
+?>
+<div class="products wrapper grid products-grid products-related">
+    <ol class="products list items product-items">
+        <?php $iterator = 1; ?>
+        <?php foreach ($block->getProductCollection() as $_item): ?>
+            <?php $available = ''; ?>
+            <?php if (!$_item->isComposite() && $_item->isSaleable()): ?>
+                <?php if (!$_item->getRequiredOptions()): ?>
+                    <?php $available = 'related-available'; ?>
+                <?php endif; ?>
+            <?php endif; ?>
+            <?= /* @escapeNotVerified */ ($iterator++ == 1) ? '<li class="item product product-item">' : '</li><li class="item product product-item">' ?>
+            <div class="product-item-info <?= /* @escapeNotVerified */ $available ?>">
+                <a href="<?php echo $_item->getProductUrl() ?>" class="product photo product-item-photo">
+                    <img src="<?php echo $block->getImageHelper()->init($_item, 'product_page_image_small')->setImageFile($_item->getFile())->resize(200, 200)->getUrl();;  ?>" alt="">
+                </a>
+                <div class="product details product-item-details">
+                    <strong class="product name product-item-name"><a class="product-item-link" title="<?= $block->escapeHtml($_item->getName()) ?>" href="<?= /* @escapeNotVerified */ $block->getProductUrl($_item) ?>">
+                            <?= $block->escapeHtml($_item->getName()) ?></a>
+                    </strong>
+
+                    <?= /* @escapeNotVerified */ $block->getProductPrice($_item) ?>
+
+
+                    <div class="product actions product-item-actions">
+
+                        <div class="actions-primary">
+                            <?php if ($_item->isSaleable()): ?>
+                                <?php if ($_item->getTypeInstance()->hasRequiredOptions($_item)): ?>
+                                    <button class="action tocart primary" data-mage-init='{"redirectUrl": {"url": "<?= /* @escapeNotVerified */ $block->getAddToCartUrl($_item) ?>"}}' type="button" title="<?= /* @escapeNotVerified */ __('Add to Cart') ?>">
+                                        <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                    </button>
+                                <?php else: ?>
+                                    <?php $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
+                                    $postData = $postDataHelper->getPostData($block->getAddToCartUrl($_item), ['product' => $_item->getEntityId()])
+                                    ?>
+                                    <button class="action tocart primary"
+                                            data-post='<?= /* @escapeNotVerified */ $postData ?>'
+                                            type="button" title="<?= /* @escapeNotVerified */ __('Add to Cart') ?>">
+                                        <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                    </button>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <?php if ($_item->getIsSalable()): ?>
+                                    <div class="stock available"><span><?= /* @escapeNotVerified */ __('In stock') ?></span></div>
+                                <?php else: ?>
+                                    <div class="stock unavailable"><span><?= /* @escapeNotVerified */ __('Out of stock') ?></span></div>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
+                    <div class="secondary-addto-links actions-secondary" data-role="add-to-links">
+                        <?php if ($addToBlock = $block->getChildBlock('addto')): ?>
+                            <?= $addToBlock->setProduct($_item)->getChildHtml() ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?= ($iterator == count($block->getProductCollection())+1) ? '</li>' : '' ?>
+        <?php endforeach ?>
+    </ol>
+</div>

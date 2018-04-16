@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Company_Related::product_related"
+             title="Related"
+             module="Company_Related"
+             sortOrder="20"
+             action="product_related/visitors/"
+             resource="Company_Related::product_related" />
+    </menu>
+</config>
