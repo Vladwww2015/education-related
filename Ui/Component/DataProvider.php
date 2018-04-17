@@ -119,5 +119,4 @@ class DataProvider extends UiDataProvider
     {
         return $this->_relatedCollection->getProductVisitorQty();
     }
-
 }

@@ -42,7 +42,7 @@
         <column name="entity_id" sortOrder="10">
             <settings>
                 <filter>textRange</filter>
-                <label translate="true">ID</label>
+                <label translate="true">Product Id</label>
                 <sorting>asc</sorting>
             </settings>
         </column>

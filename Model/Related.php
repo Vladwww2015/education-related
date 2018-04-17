@@ -5,6 +5,7 @@ namespace Company\Related\Model;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use Magento\Customer\Model\Session;
+use Magento\Customer\Model\Visitor;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Store\Model\StoreManagerInterface;
@@ -15,7 +16,12 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Company\Related\Model\ResourceModel\Related as ResourceRelated;
 
 use Company\Related\Helper\Data as Helper;
+use Magento\TestFramework\Event\Magento;
 
+/**
+ * Class Related
+ * @package Company\Related\Model
+ */
 class Related extends AbstractModel
 {
     const CACHE_TAG = 'company_related';
@@ -41,6 +47,11 @@ class Related extends AbstractModel
      * @var Session
      */
     protected $_customerSession;
+
+    /**
+     * @var Visitor
+     */
+    protected $_customerVisitor;
 
     /**
      * @var StoreManagerInterface
@@ -81,6 +92,7 @@ class Related extends AbstractModel
     public function __construct(
         Context $context,
         Registry $registry,
+        Visitor $customerVisitor,
         Session $customerSession,
         StoreManagerInterface $storeManager,
         Helper $helper,
@@ -96,8 +108,50 @@ class Related extends AbstractModel
 
         $this->_customerSession = $customerSession;
 
+        $this->_customerVisitor = $customerVisitor;
+
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
         $this->_resource = $resourceConnection;
+    }
+
+    /**
+     * @return \Magento\Catalog\Model\ResourceModel\Product\Collection
+     */
+    public function getRelatedProductCollection()
+    {
+        $productIds = $this->getProductRelatedIds();
+        $obj = \Magento\Framework\App\ObjectManager::getInstance();
+        $productCollection = $obj->create(ProductCollection::class);
+        return  $productCollection->addAttributeToSelect(['thumbnail', 'url_key'])
+            ->addFieldToFilter('entity_id', ['in' => [$productIds]])
+            ->setPageSize($this->_helper->getRelatedProductQty())->load();
+    }
+
+    /**
+     * @return \Magento\Customer\Model\Customer
+     */
+    public function getCustomer()
+    {
+        return $this->_customerSession->getCustomer();
+    }
+
+    /**
+     * @return \Magento\Catalog\Model\Product
+     */
+    public function getProduct()
+    {
+        if(!$this->_product) {
+            $this->_product = $this->_registry->registry('current_product');
+        }
+        return $this->_product;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStoreId()
+    {
+        return $this->_storeManager->getStore()->getId();
     }
 
     protected function _construct()
@@ -143,7 +197,6 @@ class Related extends AbstractModel
         return $this->_productIds;
     }
 
-
     /**
      * @return array
      */
@@ -165,16 +218,16 @@ class Related extends AbstractModel
 
     /**
      * @return array
-     * TODO customer current visitor id
-     * https://magento.stackexchange.com/questions/134192/magento-2-how-to-get-visitors-data
      */
     protected function getVisitorIds()
     {
         if(!count($this->_visitorIds)) {
+            $currentVisitorId = $this->_customerVisitor->getId();
+            $visitorQuery = $currentVisitorId ? ',' . $currentVisitorId : '';
             $tableName = $this->_resource->getTableName(self::TABLE_NAME);
             $visitorIds = $this->_resource->getConnection()
                 ->fetchAll('SELECT visitor_id FROM ' . $tableName .
-                    ' WHERE visitor_id NOT IN ("null")
+                    ' WHERE visitor_id NOT IN ("null"' . $visitorQuery . ')
                 AND product_id = ' . $this->getProduct()->getId() . '
                 AND store_id = ' . $this->getStoreId() . '
                 ');
@@ -197,45 +250,5 @@ class Related extends AbstractModel
             }
         }
         return 0;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRelatedProductCollection()
-    {
-        $productIds = $this->getProductRelatedIds();
-        $obj = \Magento\Framework\App\ObjectManager::getInstance();
-        $productCollection = $obj->create(ProductCollection::class);
-        return  $productCollection->addAttributeToSelect(['thumbnail', 'url_key'])
-            ->addFieldToFilter('entity_id', ['in' => [$productIds]])
-            ->setPageSize($this->_helper->getRelatedProductQty())->load();
-    }
-
-    /**
-     * @return \Magento\Customer\Model\Customer
-     */
-    public function getCustomer()
-    {
-        return $this->_customerSession->getCustomer();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getProduct()
-    {
-        if(!$this->_product) {
-            $this->_product = $this->_registry->registry('current_product');
-        }
-        return $this->_product;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStoreId()
-    {
-        return $this->_storeManager->getStore()->getId();
     }
 }

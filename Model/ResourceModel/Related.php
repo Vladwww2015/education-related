@@ -4,7 +4,10 @@ namespace Company\Related\Model\ResourceModel;
 
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
-
+/**
+ * Class Related
+ * @package Company\Related\Model\ResourceModel
+ */
 class Related extends AbstractDb
 {
     protected function _construct()
