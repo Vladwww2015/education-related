@@ -124,10 +124,10 @@ class Related extends AbstractModel
     public function getRelatedProductCollection()
     {
         $productCollection = $this->_productCollectionFactory->create();
-        $productIds = $this->getProductRelatedIds();
+        $productIds = array_unique($this->getProductRelatedIds());
         return  $productCollection->addAttributeToSelect(['thumbnail', 'url_key'])
             ->addFieldToFilter('entity_id', ['in' => [$productIds]])
-            ->setPageSize($this->_helper->getRelatedProductQty())->load();
+            ->setPageSize($this->_helper->getRelatedProductQty());
     }
 
     /**
