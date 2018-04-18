@@ -21,7 +21,7 @@
         <aclResource>Company_Related::product_related</aclResource>
         <dataProvider class="Company\Related\Ui\Component\DataProvider" name="related_grid_data_source">
             <settings>
-                <requestFieldName>id</requestFieldName>
+                <requestFieldName>entity_id</requestFieldName>
                 <primaryFieldName>entity_id</primaryFieldName>
             </settings>
         </dataProvider>

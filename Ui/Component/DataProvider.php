@@ -40,11 +40,6 @@ class DataProvider extends UiDataProvider
     protected $_productCollection;
 
     /**
-     * @var array
-     */
-    protected $_result = [];
-
-    /**
      * DataProvider constructor.
      * @param string $name
      * @param string $primaryFieldName
@@ -82,26 +77,31 @@ class DataProvider extends UiDataProvider
      */
     public function getData()
     {
-        if(!count($this->_result)) {
-            $visitorsQty = $this->getProductVisitorsQty();
+        $dataSearch = $this->searchCriteriaBuilder->getData();
+        $pageSize = isset($dataSearch['page_size']) ? $dataSearch['page_size'] : 10;
+        $currentPage = isset($dataSearch['current_page']) ? $dataSearch['current_page'] : 1;
 
-            $this->_productCollection
-                ->addFieldToFilter(self::ENTITY_ID, ['in' => $this->getProductIds()])
-                ->addAttributeToSelect(self::NAME);
+        $visitorsQty = $this->getProductVisitorsQty();
 
-            foreach ($this->_productCollection as $product) {
-                if(isset($visitorsQty[$product->getId()])) {
-                    $this->_result[self::ITEMS][] = [
-                        static::ENTITY_ID    => $product->getId(),
-                        static::PRODUCT_NAME => $product->getName(),
-                        static::QTY          => $visitorsQty[$product->getId()]
-                    ];
-                }
+        $this->_productCollection
+            ->addFieldToFilter(self::ENTITY_ID, ['in' => $this->getProductIds()])
+            ->addAttributeToSelect(self::NAME)
+            ->setPageSize($pageSize)
+            ->setCurPage($currentPage);
+
+        foreach ($this->_productCollection as $product) {
+            if(isset($visitorsQty[$product->getId()])) {
+                $result[self::ITEMS][] = [
+                    static::ENTITY_ID    => $product->getId(),
+                    static::PRODUCT_NAME => $product->getName(),
+                    static::QTY          => $visitorsQty[$product->getId()]
+                ];
             }
-
-            $this->_result[self::TOTAL_RECORDS] = $this->_productCollection->getSize();
         }
-        return $this->_result;
+
+        $result[self::TOTAL_RECORDS] = $this->_productCollection->getSize();
+
+        return $result;
     }
 
     /**
