@@ -1,12 +1,11 @@
 {
-  "name": "company/related",
+  "name": "company/related-show-product",
   "description": "Related Product by customer session",
   "require": {
-    "php": "~5.6.5|7.0.2|7.0.4|~7.0.6|~7.1.0",
-    "amasty/base": "*"
+    "php": "7.0.2|7.0.4|~7.0.6|~7.1.0"
   },
   "type": "magento2-module",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "license": [
     "Commercial"
   ],
@@ -17,5 +16,11 @@
     "psr-4": {
       "Company\\Related\\": ""
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://yvlad1995@bitbucket.org/yvlad1995/education.git"
+    }
+  ]
 }
