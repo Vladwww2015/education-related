@@ -21,7 +21,7 @@ class Related extends Template
     protected $_related;
 
     /**
-     * @var null|object
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Collection
      */
     protected $_collection = null;
 
@@ -55,7 +55,7 @@ class Related extends Template
     }
 
     /**
-     * @return null|object
+     * @return null|\Magento\Catalog\Model\ResourceModel\Product\Collection
      */
     public function getProductCollection()
     {
@@ -66,7 +66,7 @@ class Related extends Template
     }
 
     /**
-     * @return mixed
+     * @return \Magento\Catalog\Helper\Image
      */
     public function getImageHelper()
     {
