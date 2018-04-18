@@ -23,9 +23,19 @@ use Company\Related\Helper\Data as Helper;
  */
 class Related extends AbstractModel
 {
-    const CACHE_TAG = 'company_related';
+    const CACHE_TAG   = 'company_related';
 
-    const TABLE_NAME = 'report_viewed_product_index';
+    const STORE_ID    = 'store_id';
+
+    const TABLE_NAME  = 'report_viewed_product_index';
+
+    const VISITOR_ID  = 'visitor_id';
+
+    const PRODUCT_ID  = 'product_id';
+
+    const CUSTOMER_ID = 'customer_id';
+
+
 
     /**
      * @var string
@@ -159,7 +169,6 @@ class Related extends AbstractModel
 
     /**
      * @return array
-     * TODO refactoring
      */
     public function getProductRelatedIds()
     {
@@ -169,35 +178,51 @@ class Related extends AbstractModel
             $customerIds = trim(implode(',', $this->getCustomerIds()), ',');
             $visitorIds = trim(implode(',', $this->getVisitorIds()), ',');
 
-            $customerIdQuery = count($this->getCustomerIds()) ?
-                'customer_id IN (' . $customerIds . ')' : '';
+            $query = $this->getQuery($customerIds, $visitorIds);
 
-            $visitorIdQuery = count($this->getVisitorIds()) ?
-                'visitor_id IN (' . $visitorIds . ')' : '';
-
-            $query = '';
-            if (mb_strlen($customerIdQuery) && mb_strlen($visitorIdQuery)) {
-                $query = 'AND ( ' . $visitorIdQuery . ' OR ' . $customerIdQuery . ' )';
-            } elseif (mb_strlen($customerIdQuery)) {
-                $query = 'AND ' . $customerIdQuery;
-            } elseif (mb_strlen($visitorIdQuery)) {
-                $query = 'AND ' . $visitorIdQuery;
-            }
-            if(mb_strlen($customerIdQuery) || mb_strlen($visitorIdQuery)) {
+            if(count($this->getCustomerIds()) || count($this->getVisitorIds())) {
                 $currentProductIds = $this->_resource->getConnection()
-                    ->fetchAll('SELECT product_id FROM ' . $tableName . '
-                     WHERE product_id NOT IN (' . $this->getProduct()->getId() . ')' . $query . '
-                        AND store_id = ' . $this->getStoreId());
+                    ->fetchAll('SELECT ' . self::PRODUCT_ID. ' FROM ' . $tableName . '
+                     WHERE ' . self::PRODUCT_ID. ' NOT IN (' . $this->getProduct()->getId() . ')' . $query . '
+                        AND ' . self::STORE_ID. ' = ' . $this->getStoreId());
 
-                $this->_productIds = $this->_helper->getIdsArray($currentProductIds, 'product_id');
+                $this->_productIds = $this->_helper->getIdsArray($currentProductIds, self::PRODUCT_ID);
             }
         }
         return $this->_productIds;
     }
 
+    /**
+     * init resource model
+     */
     protected function _construct()
     {
         $this->_init(ResourceRelated::class);
+    }
+
+    /**
+     * @param $customerIds
+     * @param $visitorIds
+     * @return string
+     */
+    protected function getQuery($customerIds, $visitorIds)
+    {
+        $customerIdQuery = count($this->getCustomerIds()) ?
+            self::CUSTOMER_ID. ' IN (' . $customerIds . ')' : '';
+
+        $visitorIdQuery = count($this->getVisitorIds()) ?
+            self::VISITOR_ID . ' IN (' . $visitorIds . ')' : '';
+
+        switch (true) {
+            case (mb_strlen($customerIdQuery) && mb_strlen($visitorIdQuery)) :
+                return 'AND ( ' . $visitorIdQuery . ' OR ' . $customerIdQuery . ' )';
+            case mb_strlen($customerIdQuery):
+                return 'AND ' . $customerIdQuery;
+            case mb_strlen($visitorIdQuery):
+                return 'AND ' . $visitorIdQuery;
+            default:
+                return '';
+        }
     }
 
     /**
@@ -208,13 +233,13 @@ class Related extends AbstractModel
         if(!count($this->_customerIds)) {
             $tableName = $this->_resource->getTableName(self::TABLE_NAME);
             $customerIds = $this->_resource->getConnection()
-                ->fetchAll('SELECT customer_id FROM ' . $tableName .
-                    ' WHERE customer_id NOT IN (' . $this->getCustomerId() . ') 
-                AND product_id = ' . $this->getProduct()->getId() . '
-                AND store_id = ' . $this->getStoreId() . '
+                ->fetchAll('SELECT ' . self::CUSTOMER_ID . ' FROM ' . $tableName .
+                    ' WHERE ' . self::CUSTOMER_ID. ' NOT IN (' . $this->getCustomerId() . ') 
+                AND ' . self::PRODUCT_ID. ' = ' . $this->getProduct()->getId() . '
+                AND ' . self::STORE_ID. ' = ' . $this->getStoreId() . '
                 ');
 
-            $this->_customerIds = $this->_helper->getIdsArray($customerIds, 'customer_id');
+            $this->_customerIds = $this->_helper->getIdsArray($customerIds, self::CUSTOMER_ID);
         }
         return $this->_customerIds;
     }
@@ -228,13 +253,13 @@ class Related extends AbstractModel
             $currentVisitorId = $this->_customerVisitor->getId();
             $tableName = $this->_resource->getTableName(self::TABLE_NAME);
             $visitorIds = $this->_resource->getConnection()
-                ->fetchAll('SELECT visitor_id FROM ' . $tableName .
-                    ' WHERE visitor_id NOT IN ("' . $currentVisitorId . '")
-                AND product_id = ' . $this->getProduct()->getId() . '
-                AND store_id = ' . $this->getStoreId() . '
+                ->fetchAll('SELECT ' . self::VISITOR_ID. ' FROM ' . $tableName .
+                    ' WHERE ' . self::VISITOR_ID. ' NOT IN ("' . $currentVisitorId . '")
+                AND ' . self::PRODUCT_ID . ' = ' . $this->getProduct()->getId() . '
+                AND ' . self::STORE_ID . ' = ' . $this->getStoreId() . '
                 ');
 
-            $this->_visitorIds = $this->_helper->getIdsArray($visitorIds, 'visitor_id');
+            $this->_visitorIds = $this->_helper->getIdsArray($visitorIds, self::VISITOR_ID);
         }
         return $this->_visitorIds;
     }
