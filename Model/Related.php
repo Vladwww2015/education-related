@@ -199,7 +199,7 @@ class Related extends AbstractModel
     {
         $this->_init(ResourceRelated::class);
     }
-    
+
     /**
      * @return array
      */
