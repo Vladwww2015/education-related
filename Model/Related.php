@@ -11,12 +11,11 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 
 use Company\Related\Model\ResourceModel\Related as ResourceRelated;
 
 use Company\Related\Helper\Data as Helper;
-use Magento\TestFramework\Event\Magento;
 
 /**
  * Class Related
@@ -63,6 +62,12 @@ class Related extends AbstractModel
      */
     protected $_helper;
 
+
+    /**
+     * @var ProductCollectionFactory
+     */
+    protected $_productCollectionFactory;
+
     /**
      * @var array
      */
@@ -97,18 +102,17 @@ class Related extends AbstractModel
         StoreManagerInterface $storeManager,
         Helper $helper,
         ResourceConnection $resourceConnection,
+        ProductCollectionFactory $productCollectionFactory,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
     )
     {
-        $this->_helper = $helper;
-
-        $this->_storeManager = $storeManager;
-
+        $this->_helper          = $helper;
+        $this->_storeManager    = $storeManager;
         $this->_customerSession = $customerSession;
-
         $this->_customerVisitor = $customerVisitor;
+        $this->_productCollectionFactory = $productCollectionFactory;
 
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
         $this->_resource = $resourceConnection;
@@ -119,9 +123,8 @@ class Related extends AbstractModel
      */
     public function getRelatedProductCollection()
     {
+        $productCollection = $this->_productCollectionFactory->create();
         $productIds = $this->getProductRelatedIds();
-        $obj = \Magento\Framework\App\ObjectManager::getInstance();
-        $productCollection = $obj->create(ProductCollection::class);
         return  $productCollection->addAttributeToSelect(['thumbnail', 'url_key'])
             ->addFieldToFilter('entity_id', ['in' => [$productIds]])
             ->setPageSize($this->_helper->getRelatedProductQty())->load();
@@ -152,11 +155,6 @@ class Related extends AbstractModel
     public function getStoreId()
     {
         return $this->_storeManager->getStore()->getId();
-    }
-
-    protected function _construct()
-    {
-        $this->_init(ResourceRelated::class);
     }
 
     /**
@@ -197,6 +195,11 @@ class Related extends AbstractModel
         return $this->_productIds;
     }
 
+    protected function _construct()
+    {
+        $this->_init(ResourceRelated::class);
+    }
+    
     /**
      * @return array
      */
@@ -223,11 +226,10 @@ class Related extends AbstractModel
     {
         if(!count($this->_visitorIds)) {
             $currentVisitorId = $this->_customerVisitor->getId();
-            $visitorQuery = $currentVisitorId ? ',' . $currentVisitorId : '';
             $tableName = $this->_resource->getTableName(self::TABLE_NAME);
             $visitorIds = $this->_resource->getConnection()
                 ->fetchAll('SELECT visitor_id FROM ' . $tableName .
-                    ' WHERE visitor_id NOT IN ("null"' . $visitorQuery . ')
+                    ' WHERE visitor_id NOT IN ("' . $currentVisitorId . '")
                 AND product_id = ' . $this->getProduct()->getId() . '
                 AND store_id = ' . $this->getStoreId() . '
                 ');
