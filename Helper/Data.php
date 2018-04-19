@@ -10,7 +10,7 @@ class Data extends Config
 {
     /**
      * @param array $data
-     * @param $field
+     * @param string $field
      * @return array
      */
     public function getIdsArray(array $data, $field)
