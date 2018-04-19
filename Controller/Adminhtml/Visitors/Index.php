@@ -39,6 +39,7 @@ class Index extends Action
     public function execute()
     {
         $resultPage = $this->_resultPageFactory->create();
+
         return $resultPage;
     }
 

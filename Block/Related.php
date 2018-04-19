@@ -62,6 +62,7 @@ class Related extends Template
         if($this->_collection === null) {
             $this->_collection = $this->_related->getRelatedProductCollection()->load();
         }
+
         return $this->_collection;
     }
 
@@ -73,6 +74,7 @@ class Related extends Template
         if(!$this->_imageHelper) {
             $this->_imageHelper = $this->_imageHelperFactory->create();
         }
+
         return $this->_imageHelper;
     }
 }

@@ -135,6 +135,7 @@ class Related extends AbstractModel
     {
         $productCollection = $this->_productCollectionFactory->create();
         $productIds = array_unique($this->getProductRelatedIds());
+
         return  $productCollection->addAttributeToSelect(['thumbnail', 'url_key'])
             ->addFieldToFilter('entity_id', ['in' => [$productIds]])
             ->setPageSize($this->_helper->getRelatedProductQty());
@@ -156,6 +157,7 @@ class Related extends AbstractModel
         if(!$this->_product) {
             $this->_product = $this->_registry->registry('current_product');
         }
+
         return $this->_product;
     }
 
@@ -189,6 +191,7 @@ class Related extends AbstractModel
                 $this->_productIds = $this->_helper->getIdsArray($currentProductIds, self::PRODUCT_ID);
             }
         }
+
         return $this->_productIds;
     }
 
@@ -241,6 +244,7 @@ class Related extends AbstractModel
 
             $this->_customerIds = $this->_helper->getIdsArray($customerIds, self::CUSTOMER_ID);
         }
+
         return $this->_customerIds;
     }
 
@@ -261,6 +265,7 @@ class Related extends AbstractModel
 
             $this->_visitorIds = $this->_helper->getIdsArray($visitorIds, self::VISITOR_ID);
         }
+
         return $this->_visitorIds;
     }
 
@@ -276,6 +281,7 @@ class Related extends AbstractModel
                 return $this->getCustomer()->getId();
             }
         }
+
         return 0;
     }
 }
