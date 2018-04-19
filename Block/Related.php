@@ -3,7 +3,7 @@
 namespace Company\Related\Block;
 
 use Magento\Framework\View\Element\Template;
-use Magento\Framework\DataObject\IdentityInterface;
+
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Helper\ImageFactory;
 
@@ -31,7 +31,7 @@ class Related extends Template
     protected $_imageHelperFactory;
 
     /**
-     * @var
+     * @var \Magento\Catalog\Helper\Image
      */
     protected $_imageHelper;
 
