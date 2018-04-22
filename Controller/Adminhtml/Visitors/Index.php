@@ -20,14 +20,6 @@ class Index extends Action
     protected $_resultPageFactory;
 
     /**
-     * @return bool
-     */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed(static::ADMIN_RESOURCE);
-    }
-
-    /**
      * Index constructor.
      * @param Context $context
      * @param PageFactory $resultPageFactory
@@ -47,6 +39,15 @@ class Index extends Action
     public function execute()
     {
         $resultPage = $this->_resultPageFactory->create();
+
         return $resultPage;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed(static::ADMIN_RESOURCE);
     }
 }

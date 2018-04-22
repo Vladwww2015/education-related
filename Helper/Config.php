@@ -23,5 +23,4 @@ class Config extends AbstractHelper
              ScopeInterface::SCOPE_STORE
          );
      }
-
 }

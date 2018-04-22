@@ -16,11 +16,5 @@
     "psr-4": {
       "Company\\Related\\": ""
     }
-  },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/Vladwww2015/education-related"
-    }
-  ]
+  }
 }

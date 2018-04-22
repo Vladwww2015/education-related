@@ -3,7 +3,7 @@
 namespace Company\Related\Block;
 
 use Magento\Framework\View\Element\Template;
-use Magento\Framework\DataObject\IdentityInterface;
+
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Helper\ImageFactory;
 
@@ -31,7 +31,7 @@ class Related extends Template
     protected $_imageHelperFactory;
 
     /**
-     * @var
+     * @var \Magento\Catalog\Helper\Image
      */
     protected $_imageHelper;
 
@@ -62,6 +62,7 @@ class Related extends Template
         if($this->_collection === null) {
             $this->_collection = $this->_related->getRelatedProductCollection()->load();
         }
+
         return $this->_collection;
     }
 
@@ -73,6 +74,7 @@ class Related extends Template
         if(!$this->_imageHelper) {
             $this->_imageHelper = $this->_imageHelperFactory->create();
         }
+
         return $this->_imageHelper;
     }
 }
