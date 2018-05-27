@@ -3,7 +3,6 @@
 namespace Company\Related\Block;
 
 use Magento\Framework\View\Element\Template;
-
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Helper\ImageFactory;
 
@@ -60,7 +59,7 @@ class Related extends Template
     public function getProductCollection()
     {
         if($this->_collection === null) {
-            $this->_collection = $this->_related->getRelatedProductCollection()->load();
+            $this->_collection = $this->_related->getRelatedProductCollection();
         }
 
         return $this->_collection;

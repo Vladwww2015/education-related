@@ -9,5 +9,21 @@
                 </field>
             </group>
         </section>
+        <tab id="sp_contact" translate="label" sortOrder="200">
+            <label>Sp Contact</label>
+        </tab>
+        <section id="sp">
+            <class>separator-top</class>
+            <label>Sp Contact</label>
+            <tab>sp_contact</tab>
+            <resource>Sp_Contact::sp_contact</resource>
+            <group id="sps" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Configuraction</label>
+                <field id="email" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Email</label>
+                    <validate>validate-email</validate>
+                </field>
+            </group>
+        </section>
     </system>
 </config>

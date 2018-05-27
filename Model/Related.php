@@ -18,6 +18,9 @@ use Company\Related\Model\ResourceModel\RelatedFactory as ResourceRelatedFactory
  */
 class Related extends AbstractModel
 {
+    /**
+     * @var ResourceRelatedFactory
+     */
     protected $_resourceRelatedFactory;
 
     /**
@@ -51,12 +54,12 @@ class Related extends AbstractModel
     }
 
     /**
-     * @return \Company\Related\Model\ResourceModel\Related\Collection
+     * @return \Magento\Catalog\Model\ResourceModel\Product\Collection
      */
     public function getRelatedProductCollection()
     {
-        $relactedCollection = $this->_resourceRelatedFactory->create();
+        $resourceRelacted = $this->_resourceRelatedFactory->create();
 
-        return $relactedCollection->getRelatedProductCollection();
+        return $resourceRelacted->getRelatedProductCollection();
     }
 }

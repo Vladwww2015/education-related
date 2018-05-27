@@ -12,7 +12,6 @@ use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 
 use Company\Related\Helper\Data as Helper;
-use Company\Related\Model\ResourceModel\Related as ResourceRelated;
 
 /**
  * Class Related
@@ -64,7 +63,7 @@ class Related extends AbstractDb
     protected $_storeManager;
 
     /**
-     * @var HelperConfig
+     * @var Helper
      */
     protected $_helper;
 
@@ -168,6 +167,9 @@ class Related extends AbstractDb
             ->setPageSize($this->_helper->getRelatedProductQty());
     }
 
+    /**
+     * init table and set primary key
+     */
     protected function _construct()
     {
         $this->_init('report_viewed_product_index', 'index_id');
