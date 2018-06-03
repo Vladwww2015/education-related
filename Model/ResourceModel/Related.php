@@ -186,7 +186,7 @@ class Related extends AbstractDb
             $customerIds = trim(implode(',', $this->getCustomerIds()), ',');
             $visitorIds = trim(implode(',', $this->getVisitorIds()), ',');
 
-            $query = $this->getQuery($customerIds, $visitorIds);
+            $query = $this->_getQuery($customerIds, $visitorIds);
 
             if(count($this->getCustomerIds()) || count($this->getVisitorIds())) {
                 $currentProductIds = $this->_resources->getConnection()
@@ -207,7 +207,7 @@ class Related extends AbstractDb
      * @param $visitorIds
      * @return string
      */
-    protected function getQuery($customerIds, $visitorIds)
+    protected function _getQuery($customerIds, $visitorIds)
     {
         $customerIdQuery = count($this->getCustomerIds()) ?
             self::CUSTOMER_ID. ' IN (' . $customerIds . ')' : '';
@@ -243,6 +243,7 @@ class Related extends AbstractDb
 
             $this->_customerIds = $this->_helper->getIdsArray($customerIds, self::CUSTOMER_ID);
         }
+
         return $this->_customerIds;
     }
 

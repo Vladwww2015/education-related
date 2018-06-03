@@ -23,6 +23,7 @@ class RelatedTest extends TestCase
      */
     protected $_related;
 
+    /** {@inheritdoc} */
     protected function setUp()
     {
         $objectManager = new ObjectManager($this);
@@ -48,11 +49,15 @@ class RelatedTest extends TestCase
         );
     }
 
+    /** {@inheritdoc} */
     protected function tearDown()
     {
         unset($this->_related);
     }
 
+    /**
+     * @assert ProductCollection
+     */
     public function testGetRelatedProductCollection()
     {
         $result = $this->_related->getRelatedProductCollection();
