@@ -16,6 +16,10 @@ use Company\Related\Model\ResourceModel\Related\Collection as RelatedCollection;
 use Company\Related\Model\ResourceModel\RelatedFactory as ResourceRelatedFactory;
 use Company\Related\Block\Related;
 
+/**
+ * Class RelatedTest
+ * @package Company\Related\Test\Helper
+ */
 class RelatedTest extends TestCase
 {
 

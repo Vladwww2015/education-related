@@ -3,8 +3,11 @@
 namespace Company\Related\Test\Unit\Model\ResourceModel;
 
 use Magento\Catalog\Model\Product;
+use Magento\Customer\Model\Session;
+use Magento\Customer\Model\Customer;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 
 use PHPUnit\Framework\TestCase;
 
@@ -36,6 +39,21 @@ class RelatedTest extends TestCase
      */
     protected $_store;
 
+    /**
+     * @var \Magento\Customer\Model\Session
+     */
+    protected $_customerSession;
+
+    /**
+     * @var \Magento\Customer\Model\Customer
+     */
+    protected $_customer;
+
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Collection
+     */
+    protected $_productCollection;
+
     protected function setUp()
     {
         $this->_resourceRelated = $this->createMock(Related::class);
@@ -44,13 +62,21 @@ class RelatedTest extends TestCase
         $this->_store = $this->createMock(StoreInterface::class);
         $this->_storeManager = $this->createMock(StoreManagerInterface::class);
 
+        $this->_customerSession = $this->createMock(Session::class);
+
+        $this->_customer = $this->createMock(Customer::class);
+        $this->_customerSession->expects($this->once())->method('getCustomer')->willReturn($this->_customer);
+
         $this->_resourceRelated->expects($this->any())
             ->method('getProduct')
             ->willReturn($this->_product);
 
+        $this->_productCollection = $this->createMock(ProductCollection::class);
+
+
         $this->_resourceRelated->expects($this->any())
-            ->method('_getQuery')
-            ->willReturn($this->_getQueryString());
+            ->method('getCustomer')
+            ->willReturn($this->_customerSession->getCustomer());
 
         $this->_storeManager->expects($this->any())
             ->method('getStore')
@@ -63,11 +89,24 @@ class RelatedTest extends TestCase
 
     protected function tearDown()
     {
+        unset($this->_resourceRelated);
+        unset($this->_product);
+        unset($this->_store);
+        unset($this->_storeManager);
+        unset($this->_customerSession);
+        unset($this->_resourceRelated);
+        unset($this->_storeManager);
+        unset($this->_store);
+        unset($this->_productCollection);
     }
 
-    public function getCustomerTest()
+    public function testGetCustomer()
     {
-        // \Magento\Customer\Model\Customer
+        $result = $this->_resourceRelated->getCustomer();
+        $this->assertInstanceOf(
+            Customer::class,
+            $result
+        );
     }
 
     public function testGetProduct()
@@ -87,42 +126,13 @@ class RelatedTest extends TestCase
         $this->assertEquals(1, $result);
     }
 
-    /**
-     * @dataProvider productRelatedIds
-     *
-     * @param string  $expression
-     * @param bool    $expected
-     */
-    public function testGetProductRelatedIds(
-
-    )
+    public function testGetRelatedProductCollection()
     {
+        $result = $this->_productCollection;
 
-    }
-
-
-    public function getCustomerIdsTest()
-    {
-
-    }
-
-    public function getVisitorIdsTest()
-    {
-
-    }
-
-    public function getCustomerIdTest()
-    {
-
-    }
-
-    public function getDataProviderCustomerVisitorIds()
-    {
-        return [];
-    }
-
-    protected function _getQueryString()
-    {
-        
+        $this->assertInstanceOf(
+            ProductCollection::class,
+            $result
+        );
     }
 }
